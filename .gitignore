@@ -1,0 +1,89 @@
+# ============================================
+# === UNITY + VISUAL STUDIO .gitignore ===
+# ============================================
+
+# --- Unity generated folders ---
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+UserSettings/
+MemoryCaptures/
+Recordings/
+sysinfo.txt
+
+# --- Ignore cache & build systems ---
+Library/PackageCache/
+Packages/com.unity.collab-proxy/
+Library/ScriptAssemblies/
+Library/CrashReplays/
+Library/ShaderCache/
+Library/GICache/
+Library/Artifacts/
+Library/PlayerDataCache/
+Library/PackageManager/
+Library/metadata/
+
+# --- Ignore system and IDE folders ---
+.vs/
+.idea/
+.gradle/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# --- Ignore IDE specific files ---
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+
+# --- Ignore build results ---
+[Bb]uild/
+[Bb]uilds/
+ExportedObj/
+*.apk
+*.aab
+*.unitypackage
+
+# --- Ignore temporary files ---
+*.log
+*.bak
+*.tmp
+*.swp
+*.lock
+*.orig
+*.gid
+
+# --- Ignore Auto-generated files ---
+obj/
+bin/
+Temp/
+
+# --- Keep essential Unity project folders ---
+!Assets/
+!ProjectSettings/
+!Packages/
+!Packages/manifest.json
+!Packages/packages-lock.json
+
+# --- Optional: if you use custom Editor config or InputManager ---
+!ProjectSettings/EditorBuildSettings.asset
+!ProjectSettings/GraphicsSettings.asset
+!ProjectSettings/InputManager.asset
+!ProjectSettings/TagManager.asset
+!ProjectSettings/TimeManager.asset
+
+# ============================================
+# End of .gitignore
+# ============================================
