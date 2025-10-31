@@ -3,28 +3,12 @@
 public class Player : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 7f; // Tốc độ di chuyển của nhân vật
+    [SerializeField] private GameInput gameInput;   
     private bool isWalking = false;
     private void Update()
     {
-        // B1: Tạo vector đầu vào (Input)
-        Vector2 inputVector = new Vector2(0, 0);
+       Vector2 inputVector = gameInput.GetMovementVectorNormalized();
 
-        if (Input.GetKey(KeyCode.W))
-            inputVector.y = +1; // Đi lên
-
-        if (Input.GetKey(KeyCode.S))
-            inputVector.y = -1; // Đi xuống
-
-        if (Input.GetKey(KeyCode.A))
-            inputVector.x = -1; // Sang trái
-
-        if (Input.GetKey(KeyCode.D))
-            inputVector.x = +1; // Sang phải
-
-        // B2: Chuẩn hóa hướng di chuyển (để khi đi chéo không nhanh hơn)
-        inputVector = inputVector.normalized;
-
-        // B3: Tạo vector 3D từ vector 2D (x, y -> x, z trong không gian Unity)
         Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
 
         // B4: Di chuyển nhân vật
