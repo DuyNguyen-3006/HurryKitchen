@@ -2,13 +2,13 @@
 
 public class SelectedCounterVisual : MonoBehaviour
 {
-    [SerializeField] private ClearCounter clearCounter;
-    [SerializeField] private GameObject visualGameObject;
+    [SerializeField] private BaseCounter baseCounter;
+    [SerializeField] private GameObject[] visualGameObjectArray;
 
     private void Start()
     {
         // Ẩn mặc định
-        if (visualGameObject != null) visualGameObject.SetActive(false);
+        //if (visualGameObjectArray != null) visualGameObjectArray.SetActive(false);
 
         // Đăng ký sự kiện sau khi Player.Instance đã có (Player.Instance set trong Awake)
         if (Player.Instance != null)
@@ -25,12 +25,24 @@ public class SelectedCounterVisual : MonoBehaviour
 
     private void Player_OnSelectedCounterChanged(object sender, Player.OnselectedCounterChangedEventArgs e)
     {
-        if (e.selectedCounter == clearCounter)
+        if (e.selectedCounter == baseCounter)
             Show();
         else
             Hide();
     }
 
-    private void Show() { if (visualGameObject != null) visualGameObject.SetActive(true); }
-    private void Hide() { if (visualGameObject != null) visualGameObject.SetActive(false); }
+    private void Show()
+    {
+        foreach (GameObject visualGameObject in visualGameObjectArray)
+        {
+            visualGameObject.SetActive(true);
+        }
+    }
+    private void Hide()
+    {
+        foreach (GameObject visualGameObject in visualGameObjectArray) { 
+
+            visualGameObject.SetActive(false);
+          }
+    }
 }
