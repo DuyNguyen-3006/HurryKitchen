@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IKitchenObjectParent
 {
 
     public static Player Instance { get; private set; }
@@ -23,14 +23,17 @@ public class Player : MonoBehaviour
 
     [SerializeField] private GameInput gameInput;
     [SerializeField] private LayerMask countersLayerMask;
+    [SerializeField] private Transform kitchenObjectHoldPoint;
+
     private bool isWalking;
-    private ClearCounter selectedCounter;
+    private BaseCounter selectedCounter;
 
     public event EventHandler<OnselectedCounterChangedEventArgs> OnSelectedCounterChanged;
+    private KitchenObject kitchenObject;
 
     public class OnselectedCounterChangedEventArgs : EventArgs
     {
-        public ClearCounter selectedCounter;
+        public BaseCounter selectedCounter;
     }
 
     private void Awake()
@@ -51,7 +54,7 @@ public class Player : MonoBehaviour
     {
         if(selectedCounter != null) {
             
-                selectedCounter.Interact();
+                selectedCounter.Interact(this);
             } 
         
     }
@@ -80,8 +83,8 @@ public class Player : MonoBehaviour
         bool hitSomething = Physics.SphereCast(origin, interactRadius, lastInteractDir,
             out RaycastHit hitInfo, interactDistance, countersLayerMask, QueryTriggerInteraction.Collide);
 
-        if (hitSomething && hitInfo.transform.TryGetComponent(out ClearCounter clearCounter))
-            SetSelectedCounter(clearCounter);
+        if (hitSomething && hitInfo.transform.TryGetComponent(out BaseCounter baseCounter))
+            SetSelectedCounter(baseCounter);
         else
             SetSelectedCounter(null);
 
@@ -120,7 +123,7 @@ public class Player : MonoBehaviour
                 {
                     // Nếu chỉ bấm W/S thuần (|input.x| ~ 0) -> đứng yên.
                     // Nếu có A hoặc D (WA/WD) -> chỉ cho trượt theo trái/phải.
-                    bool hasLateral = Mathf.Abs(input.x) > 0.1f;
+                    bool hasLateral = Mathf.Abs(input.x) > 0.1f && Mathf.Abs(moveDir.x) > 0f;
 
                     if (hasLateral)
                     {
@@ -151,24 +154,27 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    // Va chạm lướt/chéo: cho trượt theo tiếp tuyến bề mặt
-                    Vector3 slideDir = Vector3.ProjectOnPlane(moveDir, hit.normal).normalized;
-
-                    if (slideDir.sqrMagnitude > 0.0001f)
+                    if (Mathf.Abs(moveDir.z) > 0f)
                     {
-                        if (Physics.CapsuleCast(p1, p2, capsuleRadius, slideDir, out RaycastHit slideHit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+                        // Va chạm lướt/chéo: cho trượt theo tiếp tuyến bề mặt
+                        Vector3 slideDir = Vector3.ProjectOnPlane(moveDir, hit.normal).normalized;
+
+                        if (slideDir.sqrMagnitude > 0.0001f)
                         {
-                            float allowed = Mathf.Max(0f, slideHit.distance - skin);
-                            if (allowed > 0f)
+                            if (Physics.CapsuleCast(p1, p2, capsuleRadius, slideDir, out RaycastHit slideHit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
                             {
-                                movedThisFrame = slideDir * allowed;
+                                float allowed = Mathf.Max(0f, slideHit.distance - skin);
+                                if (allowed > 0f)
+                                {
+                                    movedThisFrame = slideDir * allowed;
+                                    transform.position += movedThisFrame;
+                                }
+                            }
+                            else
+                            {
+                                movedThisFrame = slideDir * maxDistance;
                                 transform.position += movedThisFrame;
                             }
-                        }
-                        else
-                        {
-                            movedThisFrame = slideDir * maxDistance;
-                            transform.position += movedThisFrame;
                         }
                     }
                 }
@@ -192,7 +198,7 @@ public class Player : MonoBehaviour
 
     }
 
-    private void SetSelectedCounter(ClearCounter selectedCounter)
+    private void SetSelectedCounter(BaseCounter selectedCounter)
     {
                 this.selectedCounter = selectedCounter;
 
@@ -200,5 +206,28 @@ public class Player : MonoBehaviour
         {
             selectedCounter = selectedCounter
         });
+    }
+
+    public Transform GetKitchenObjectFollowTransform()
+    {
+        return kitchenObjectHoldPoint;
+
+    }
+    public void SetKitchenObject(KitchenObject kitchenObject)
+    {
+        this.kitchenObject = kitchenObject;
+    }
+    public KitchenObject GetKitchenObject()
+    {
+        return kitchenObject;
+    }
+    public void ClearKitchenObject()
+    {
+        kitchenObject = null;
+
+    }
+    public bool HasKitchenObject()
+    {
+        return (kitchenObject != null);
     }
 }
