@@ -22875,173 +22875,559 @@ v
 //    }
 //}//    using UnityEngine;
 
-//public class PlayerAnimator : MonoBehaviour
-//{
-//    // Start is called once before the first execution of Update after the MonoBehaviour is created
-//    private const string IS_WALKING = "IsWalking";
+// private void HandleMovement()
+//     {
+//         Vector2 input = gameInput.GetMovementVectorNormalized(); // x = A/D, y = W/S
+//         Vector3 moveDir = new Vector3(input.x, 0f, input.y);
+//         float inputMag = moveDir.magnitude;
 
-//    [SerializeField] private Player player;
+//         Vector3 movedThisFrame = Vector3.zero;
 
-//    private Animator animator;
-//    private void Awake()
-//    {
-//        animator = GetComponent<Animator>();
+//         if (inputMag > 0.0001f)
+//         {
+//             moveDir.Normalize();
+//             float maxDistance = moveSpeed * Time.deltaTime;
 
-//    }
-//    private void Update()
-//    {
-//        animator.SetBool(IS_WALKING, player.IsWalking());
-//    }
-//}//    using UnityEngine;
+//             // Xác định capsule theo vị trí hiện tại
+//             Vector3 center = transform.position;
+//             float half = Mathf.Max(0f, (capsuleHeight * 0.5f) - capsuleRadius);
+//             Vector3 p1 = center + Vector3.up * half;
+//             Vector3 p2 = center + Vector3.up * (half * 2);
 
-//public class PlayerAnimator : MonoBehaviour
-//{
-//    // Start is called once before the first execution of Update after the MonoBehaviour is created
-//    private const string IS_WALKING = "IsWalking";
+//             if (Physics.CapsuleCast(p1, p2, capsuleRadius, moveDir, out RaycastHit hit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+//             {
+//                 // Đang bị chặn theo hướng moveDir
+//                 float cosFrontal = Mathf.Cos(frontalBlockAngleDeg * Mathf.Deg2Rad);
+//                 float againstNormal = Vector3.Dot(moveDir, -hit.normal); // >0 tức là đang hướng vào tường
 
-//    [SerializeField] private Player player;
+//                 bool frontalBlocked = againstNormal >= cosFrontal;
 
-//    private Animator animator;
-//    private void Awake()
-//    {
-//        animator = GetComponent<Animator>();
+//                 if (frontalBlocked)
+//                 {
+//                     // Nếu chỉ bấm W/S thuần (|input.x| ~ 0) -> đứng yên.
+//                     // Nếu có A hoặc D (WA/WD) -> chỉ cho trượt theo trái/phải.
+//                     bool hasLateral = Mathf.Abs(input.x) > 0.1f && Mathf.Abs(moveDir.x) > 0f;
 
-//    }
-//    private void Update()
-//    {
-//        animator.SetBool(IS_WALKING, player.IsWalking());
-//    }
-//}//    using UnityEngine;
+//                     if (hasLateral)
+//                     {
+//                         // Hướng trượt lấy từ A/D, rồi chiếu lên mặt phẳng của tường
+//                         Vector3 lateralDir = new Vector3(Mathf.Sign(input.x), 0f, 0f); // trái/phải theo trục X thế giới
+//                         Vector3 slideDir = Vector3.ProjectOnPlane(lateralDir, hit.normal).normalized;
 
-//public class PlayerAnimator : MonoBehaviour
-//{
-//    // Start is called once before the first execution of Update after the MonoBehaviour is created
-//    private const string IS_WALKING = "IsWalking";
+//                         if (slideDir.sqrMagnitude > 0.0001f)
+//                         {
+//                             if (Physics.CapsuleCast(p1, p2, capsuleRadius, slideDir, out RaycastHit slideHit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+//                             {
+//                                 float allowed = Mathf.Max(0f, slideHit.distance - skin);
+//                                 if (allowed > 0f)
+//                                 {
+//                                     movedThisFrame = slideDir * allowed;
+//                                     transform.position += movedThisFrame;
+//                                 }
+//                             }
+//                             else
+//                             {
+//                                 movedThisFrame = slideDir * maxDistance;
+//                                 transform.position += movedThisFrame;
+//                             }
+//                         }
+//                         // nếu slideDir quá nhỏ -> coi như đứng yên
+//                     }
+//                     // không có A/D -> đứng yên (không cộng position)
+//                 }
+//                 else
+//                 {
+//                     if (Mathf.Abs(moveDir.z) > 0f)
+//                     {
+//                         // Va chạm lướt/chéo: cho trượt theo tiếp tuyến bề mặt
+//                         Vector3 slideDir = Vector3.ProjectOnPlane(moveDir, hit.normal).normalized;
 
-//    [SerializeField] private Player player;
+//                         if (slideDir.sqrMagnitude > 0.0001f)
+//                         {
+//                             if (Physics.CapsuleCast(p1, p2, capsuleRadius, slideDir, out RaycastHit slideHit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+//                             {
+//                                 float allowed = Mathf.Max(0f, slideHit.distance - skin);
+//                                 if (allowed > 0f)
+//                                 {
+//                                     movedThisFrame = slideDir * allowed;
+//                                     transform.position += movedThisFrame;
+//                                 }
+//                             }
+//                             else
+//                             {
+//                                 movedThisFrame = slideDir * maxDistance;
+//                                 transform.position += movedThisFrame;
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//             else
+//             {
+//                 // Không va chạm: đi bình thường
+//                 movedThisFrame = moveDir * maxDistance;
+//                 transform.position += movedThisFrame;
+//             }
 
-//    private Animator animator;
-//    private void Awake()
-//    {
-//        animator = GetComponent<Animator>();
+//             // Xoay theo hướng chuyển động thực tế (chỉ xoay khi có di chuyển)
+//             if (movedThisFrame.sqrMagnitude > 0f)
+//             {
+//                 Vector3 faceDir = movedThisFrame.normalized;
+//                 transform.forward = Vector3.Slerp(transform.forward, faceDir, Time.deltaTime * rotateSpeed);
+//             }
+//         }
 
-//    }
-//    private void Update()
-//    {
-//        animator.SetBool(IS_WALKING, player.IsWalking());
-//    }
-//}//    using UnityEngine;
+//         isWalking = inputMag > 0.0001f;
 
-//public class PlayerAnimator : MonoBehaviour
-//{
-//    // Start is called once before the first execution of Update after the MonoBehaviour is created
-//    private const string IS_WALKING = "IsWalking";
+//     }
 
-//    [SerializeField] private Player player;
+//     private void SetSelectedCounter(BaseCounter selectedCounter)
+//     {
+//                 this.selectedCounter = selectedCounter;
 
-//    private Animator animator;
-//    private void Awake()
-//    {
-//        animator = GetComponent<Animator>();
+//         OnSelectedCounterChanged?.Invoke(this, new OnselectedCounterChangedEventArgs
+//         {
+//             selectedCounter = selectedCounter
+//         });
+//     }
 
-//    }
-//    private void Update()
-//    {
-//        animator.SetBool(IS_WALKING, player.IsWalking());
-//    }
-//}//    using UnityEngine;
+//     public Transform GetKitchenObjectFollowTransform()
+//     {
+//         return kitchenObjectHoldPoint;
 
-//public class PlayerAnimator : MonoBehaviour
-//{
-//    // Start is called once before the first execution of Update after the MonoBehaviour is created
-//    private const string IS_WALKING = "IsWalking";
+//     }
+//     public void SetKitchenObject(KitchenObject kitchenObject)
+//     {
+//         this.kitchenObject = kitchenObject;
+//     }
+//     public KitchenObject GetKitchenObject()
+//     {
+//         return kitchenObject;
+//     }
+//     public void ClearKitchenObject()
+//     {
+//         kitchenObject = null;
 
-//    [SerializeField] private Player player;
+//     }
+//     public bool HasKitchenObject()
+//     {
+//         return (kitchenObject != null);
+//     }
+// }
+// private void HandleMovement()
+//     {
+//         Vector2 input = gameInput.GetMovementVectorNormalized(); // x = A/D, y = W/S
+//         Vector3 moveDir = new Vector3(input.x, 0f, input.y);
+//         float inputMag = moveDir.magnitude;
 
-//    private Animator animator;
-//    private void Awake()
-//    {
-//        animator = GetComponent<Animator>();
+//         Vector3 movedThisFrame = Vector3.zero;
 
-//    }
-//    private void Update()
-//    {
-//        animator.SetBool(IS_WALKING, player.IsWalking());
-//    }
-//}//    using UnityEngine;
+//         if (inputMag > 0.0001f)
+//         {
+//             moveDir.Normalize();
+//             float maxDistance = moveSpeed * Time.deltaTime;
 
-//public class PlayerAnimator : MonoBehaviour
-//{
-//    // Start is called once before the first execution of Update after the MonoBehaviour is created
-//    private const string IS_WALKING = "IsWalking";
+//             // Xác định capsule theo vị trí hiện tại
+//             Vector3 center = transform.position;
+//             float half = Mathf.Max(0f, (capsuleHeight * 0.5f) - capsuleRadius);
+//             Vector3 p1 = center + Vector3.up * half;
+//             Vector3 p2 = center + Vector3.up * (half * 2);
 
-//    [SerializeField] private Player player;
+//             if (Physics.CapsuleCast(p1, p2, capsuleRadius, moveDir, out RaycastHit hit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+//             {
+//                 // Đang bị chặn theo hướng moveDir
+//                 float cosFrontal = Mathf.Cos(frontalBlockAngleDeg * Mathf.Deg2Rad);
+//                 float againstNormal = Vector3.Dot(moveDir, -hit.normal); // >0 tức là đang hướng vào tường
 
-//    private Animator animator;
-//    private void Awake()
-//    {
-//        animator = GetComponent<Animator>();
+//                 bool frontalBlocked = againstNormal >= cosFrontal;
 
-//    }
-//    private void Update()
-//    {
-//        animator.SetBool(IS_WALKING, player.IsWalking());
-//    }
-//}//    using UnityEngine;
+//                 if (frontalBlocked)
+//                 {
+//                     // Nếu chỉ bấm W/S thuần (|input.x| ~ 0) -> đứng yên.
+//                     // Nếu có A hoặc D (WA/WD) -> chỉ cho trượt theo trái/phải.
+//                     bool hasLateral = Mathf.Abs(input.x) > 0.1f && Mathf.Abs(moveDir.x) > 0f;
 
-//public class PlayerAnimator : MonoBehaviour
-//{
-//    // Start is called once before the first execution of Update after the MonoBehaviour is created
-//    private const string IS_WALKING = "IsWalking";
+//                     if (hasLateral)
+//                     {
+//                         // Hướng trượt lấy từ A/D, rồi chiếu lên mặt phẳng của tường
+//                         Vector3 lateralDir = new Vector3(Mathf.Sign(input.x), 0f, 0f); // trái/phải theo trục X thế giới
+//                         Vector3 slideDir = Vector3.ProjectOnPlane(lateralDir, hit.normal).normalized;
 
-//    [SerializeField] private Player player;
+//                         if (slideDir.sqrMagnitude > 0.0001f)
+//                         {
+//                             if (Physics.CapsuleCast(p1, p2, capsuleRadius, slideDir, out RaycastHit slideHit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+//                             {
+//                                 float allowed = Mathf.Max(0f, slideHit.distance - skin);
+//                                 if (allowed > 0f)
+//                                 {
+//                                     movedThisFrame = slideDir * allowed;
+//                                     transform.position += movedThisFrame;
+//                                 }
+//                             }
+//                             else
+//                             {
+//                                 movedThisFrame = slideDir * maxDistance;
+//                                 transform.position += movedThisFrame;
+//                             }
+//                         }
+//                         // nếu slideDir quá nhỏ -> coi như đứng yên
+//                     }
+//                     // không có A/D -> đứng yên (không cộng position)
+//                 }
+//                 else
+//                 {
+//                     if (Mathf.Abs(moveDir.z) > 0f)
+//                     {
+//                         // Va chạm lướt/chéo: cho trượt theo tiếp tuyến bề mặt
+//                         Vector3 slideDir = Vector3.ProjectOnPlane(moveDir, hit.normal).normalized;
 
-//    private Animator animator;
-//    private void Awake()
-//    {
-//        animator = GetComponent<Animator>();
+//                         if (slideDir.sqrMagnitude > 0.0001f)
+//                         {
+//                             if (Physics.CapsuleCast(p1, p2, capsuleRadius, slideDir, out RaycastHit slideHit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+//                             {
+//                                 float allowed = Mathf.Max(0f, slideHit.distance - skin);
+//                                 if (allowed > 0f)
+//                                 {
+//                                     movedThisFrame = slideDir * allowed;
+//                                     transform.position += movedThisFrame;
+//                                 }
+//                             }
+//                             else
+//                             {
+//                                 movedThisFrame = slideDir * maxDistance;
+//                                 transform.position += movedThisFrame;
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//             else
+//             {
+//                 // Không va chạm: đi bình thường
+//                 movedThisFrame = moveDir * maxDistance;
+//                 transform.position += movedThisFrame;
+//             }
 
-//    }
-//    private void Update()
-//    {
-//        animator.SetBool(IS_WALKING, player.IsWalking());
-//    }
-//}//    using UnityEngine;
+//             // Xoay theo hướng chuyển động thực tế (chỉ xoay khi có di chuyển)
+//             if (movedThisFrame.sqrMagnitude > 0f)
+//             {
+//                 Vector3 faceDir = movedThisFrame.normalized;
+//                 transform.forward = Vector3.Slerp(transform.forward, faceDir, Time.deltaTime * rotateSpeed);
+//             }
+//         }
 
-//public class PlayerAnimator : MonoBehaviour
-//{
-//    // Start is called once before the first execution of Update after the MonoBehaviour is created
-//    private const string IS_WALKING = "IsWalking";
+//         isWalking = inputMag > 0.0001f;
 
-//    [SerializeField] private Player player;
+//     }
 
-//    private Animator animator;
-//    private void Awake()
-//    {
-//        animator = GetComponent<Animator>();
+//     private void SetSelectedCounter(BaseCounter selectedCounter)
+//     {
+//                 this.selectedCounter = selectedCounter;
 
-//    }
-//    private void Update()
-//    {
-//        animator.SetBool(IS_WALKING, player.IsWalking());
-//    }
-//}//    using UnityEngine;
+//         OnSelectedCounterChanged?.Invoke(this, new OnselectedCounterChangedEventArgs
+//         {
+//             selectedCounter = selectedCounter
+//         });
+//     }
 
-//public class PlayerAnimator : MonoBehaviour
-//{
-//    // Start is called once before the first execution of Update after the MonoBehaviour is created
-//    private const string IS_WALKING = "IsWalking";
+//     public Transform GetKitchenObjectFollowTransform()
+//     {
+//         return kitchenObjectHoldPoint;
 
-//    [SerializeField] private Player player;
+//     }
+//     public void SetKitchenObject(KitchenObject kitchenObject)
+//     {
+//         this.kitchenObject = kitchenObject;
+//     }
+//     public KitchenObject GetKitchenObject()
+//     {
+//         return kitchenObject;
+//     }
+//     public void ClearKitchenObject()
+//     {
+//         kitchenObject = null;
 
-//    private Animator animator;
-//    private void Awake()
-//    {
-//        animator = GetComponent<Animator>();
+//     }
+//     public bool HasKitchenObject()
+//     {
+//         return (kitchenObject != null);
+//     }
+// }
+// private void HandleMovement()
+//     {
+//         Vector2 input = gameInput.GetMovementVectorNormalized(); // x = A/D, y = W/S
+//         Vector3 moveDir = new Vector3(input.x, 0f, input.y);
+//         float inputMag = moveDir.magnitude;
 
-//    }
-//    private void Update()
-//    {
-//        animator.SetBool(IS_WALKING, player.IsWalking());
-//    }
-//}
+//         Vector3 movedThisFrame = Vector3.zero;
+
+//         if (inputMag > 0.0001f)
+//         {
+//             moveDir.Normalize();
+//             float maxDistance = moveSpeed * Time.deltaTime;
+
+//             // Xác định capsule theo vị trí hiện tại
+//             Vector3 center = transform.position;
+//             float half = Mathf.Max(0f, (capsuleHeight * 0.5f) - capsuleRadius);
+//             Vector3 p1 = center + Vector3.up * half;
+//             Vector3 p2 = center + Vector3.up * (half * 2);
+
+//             if (Physics.CapsuleCast(p1, p2, capsuleRadius, moveDir, out RaycastHit hit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+//             {
+//                 // Đang bị chặn theo hướng moveDir
+//                 float cosFrontal = Mathf.Cos(frontalBlockAngleDeg * Mathf.Deg2Rad);
+//                 float againstNormal = Vector3.Dot(moveDir, -hit.normal); // >0 tức là đang hướng vào tường
+
+//                 bool frontalBlocked = againstNormal >= cosFrontal;
+
+//                 if (frontalBlocked)
+//                 {
+//                     // Nếu chỉ bấm W/S thuần (|input.x| ~ 0) -> đứng yên.
+//                     // Nếu có A hoặc D (WA/WD) -> chỉ cho trượt theo trái/phải.
+//                     bool hasLateral = Mathf.Abs(input.x) > 0.1f && Mathf.Abs(moveDir.x) > 0f;
+
+//                     if (hasLateral)
+//                     {
+//                         // Hướng trượt lấy từ A/D, rồi chiếu lên mặt phẳng của tường
+//                         Vector3 lateralDir = new Vector3(Mathf.Sign(input.x), 0f, 0f); // trái/phải theo trục X thế giới
+//                         Vector3 slideDir = Vector3.ProjectOnPlane(lateralDir, hit.normal).normalized;
+
+//                         if (slideDir.sqrMagnitude > 0.0001f)
+//                         {
+//                             if (Physics.CapsuleCast(p1, p2, capsuleRadius, slideDir, out RaycastHit slideHit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+//                             {
+//                                 float allowed = Mathf.Max(0f, slideHit.distance - skin);
+//                                 if (allowed > 0f)
+//                                 {
+//                                     movedThisFrame = slideDir * allowed;
+//                                     transform.position += movedThisFrame;
+//                                 }
+//                             }
+//                             else
+//                             {
+//                                 movedThisFrame = slideDir * maxDistance;
+//                                 transform.position += movedThisFrame;
+//                             }
+//                         }
+//                         // nếu slideDir quá nhỏ -> coi như đứng yên
+//                     }
+//                     // không có A/D -> đứng yên (không cộng position)
+//                 }
+//                 else
+//                 {
+//                     if (Mathf.Abs(moveDir.z) > 0f)
+//                     {
+//                         // Va chạm lướt/chéo: cho trượt theo tiếp tuyến bề mặt
+//                         Vector3 slideDir = Vector3.ProjectOnPlane(moveDir, hit.normal).normalized;
+
+//                         if (slideDir.sqrMagnitude > 0.0001f)
+//                         {
+//                             if (Physics.CapsuleCast(p1, p2, capsuleRadius, slideDir, out RaycastHit slideHit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+//                             {
+//                                 float allowed = Mathf.Max(0f, slideHit.distance - skin);
+//                                 if (allowed > 0f)
+//                                 {
+//                                     movedThisFrame = slideDir * allowed;
+//                                     transform.position += movedThisFrame;
+//                                 }
+//                             }
+//                             else
+//                             {
+//                                 movedThisFrame = slideDir * maxDistance;
+//                                 transform.position += movedThisFrame;
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//             else
+//             {
+//                 // Không va chạm: đi bình thường
+//                 movedThisFrame = moveDir * maxDistance;
+//                 transform.position += movedThisFrame;
+//             }
+
+//             // Xoay theo hướng chuyển động thực tế (chỉ xoay khi có di chuyển)
+//             if (movedThisFrame.sqrMagnitude > 0f)
+//             {
+//                 Vector3 faceDir = movedThisFrame.normalized;
+//                 transform.forward = Vector3.Slerp(transform.forward, faceDir, Time.deltaTime * rotateSpeed);
+//             }
+//         }
+
+//         isWalking = inputMag > 0.0001f;
+
+//     }
+
+//     private void SetSelectedCounter(BaseCounter selectedCounter)
+//     {
+//                 this.selectedCounter = selectedCounter;
+
+//         OnSelectedCounterChanged?.Invoke(this, new OnselectedCounterChangedEventArgs
+//         {
+//             selectedCounter = selectedCounter
+//         });
+//     }
+
+//     public Transform GetKitchenObjectFollowTransform()
+//     {
+//         return kitchenObjectHoldPoint;
+
+//     }
+//     public void SetKitchenObject(KitchenObject kitchenObject)
+//     {
+//         this.kitchenObject = kitchenObject;
+//     }
+//     public KitchenObject GetKitchenObject()
+//     {
+//         return kitchenObject;
+//     }
+//     public void ClearKitchenObject()
+//     {
+//         kitchenObject = null;
+
+//     }
+//     public bool HasKitchenObject()
+//     {
+//         return (kitchenObject != null);
+//     }
+// }
+// private void HandleMovement()
+//     {
+//         Vector2 input = gameInput.GetMovementVectorNormalized(); // x = A/D, y = W/S
+//         Vector3 moveDir = new Vector3(input.x, 0f, input.y);
+//         float inputMag = moveDir.magnitude;
+
+//         Vector3 movedThisFrame = Vector3.zero;
+
+//         if (inputMag > 0.0001f)
+//         {
+//             moveDir.Normalize();
+//             float maxDistance = moveSpeed * Time.deltaTime;
+
+//             // Xác định capsule theo vị trí hiện tại
+//             Vector3 center = transform.position;
+//             float half = Mathf.Max(0f, (capsuleHeight * 0.5f) - capsuleRadius);
+//             Vector3 p1 = center + Vector3.up * half;
+//             Vector3 p2 = center + Vector3.up * (half * 2);
+
+//             if (Physics.CapsuleCast(p1, p2, capsuleRadius, moveDir, out RaycastHit hit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+//             {
+//                 // Đang bị chặn theo hướng moveDir
+//                 float cosFrontal = Mathf.Cos(frontalBlockAngleDeg * Mathf.Deg2Rad);
+//                 float againstNormal = Vector3.Dot(moveDir, -hit.normal); // >0 tức là đang hướng vào tường
+
+//                 bool frontalBlocked = againstNormal >= cosFrontal;
+
+//                 if (frontalBlocked)
+//                 {
+//                     // Nếu chỉ bấm W/S thuần (|input.x| ~ 0) -> đứng yên.
+//                     // Nếu có A hoặc D (WA/WD) -> chỉ cho trượt theo trái/phải.
+//                     bool hasLateral = Mathf.Abs(input.x) > 0.1f && Mathf.Abs(moveDir.x) > 0f;
+
+//                     if (hasLateral)
+//                     {
+//                         // Hướng trượt lấy từ A/D, rồi chiếu lên mặt phẳng của tường
+//                         Vector3 lateralDir = new Vector3(Mathf.Sign(input.x), 0f, 0f); // trái/phải theo trục X thế giới
+//                         Vector3 slideDir = Vector3.ProjectOnPlane(lateralDir, hit.normal).normalized;
+
+//                         if (slideDir.sqrMagnitude > 0.0001f)
+//                         {
+//                             if (Physics.CapsuleCast(p1, p2, capsuleRadius, slideDir, out RaycastHit slideHit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+//                             {
+//                                 float allowed = Mathf.Max(0f, slideHit.distance - skin);
+//                                 if (allowed > 0f)
+//                                 {
+//                                     movedThisFrame = slideDir * allowed;
+//                                     transform.position += movedThisFrame;
+//                                 }
+//                             }
+//                             else
+//                             {
+//                                 movedThisFrame = slideDir * maxDistance;
+//                                 transform.position += movedThisFrame;
+//                             }
+//                         }
+//                         // nếu slideDir quá nhỏ -> coi như đứng yên
+//                     }
+//                     // không có A/D -> đứng yên (không cộng position)
+//                 }
+//                 else
+//                 {
+//                     if (Mathf.Abs(moveDir.z) > 0f)
+//                     {
+//                         // Va chạm lướt/chéo: cho trượt theo tiếp tuyến bề mặt
+//                         Vector3 slideDir = Vector3.ProjectOnPlane(moveDir, hit.normal).normalized;
+
+//                         if (slideDir.sqrMagnitude > 0.0001f)
+//                         {
+//                             if (Physics.CapsuleCast(p1, p2, capsuleRadius, slideDir, out RaycastHit slideHit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
+//                             {
+//                                 float allowed = Mathf.Max(0f, slideHit.distance - skin);
+//                                 if (allowed > 0f)
+//                                 {
+//                                     movedThisFrame = slideDir * allowed;
+//                                     transform.position += movedThisFrame;
+//                                 }
+//                             }
+//                             else
+//                             {
+//                                 movedThisFrame = slideDir * maxDistance;
+//                                 transform.position += movedThisFrame;
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//             else
+//             {
+//                 // Không va chạm: đi bình thường
+//                 movedThisFrame = moveDir * maxDistance;
+//                 transform.position += movedThisFrame;
+//             }
+
+//             // Xoay theo hướng chuyển động thực tế (chỉ xoay khi có di chuyển)
+//             if (movedThisFrame.sqrMagnitude > 0f)
+//             {
+//                 Vector3 faceDir = movedThisFrame.normalized;
+//                 transform.forward = Vector3.Slerp(transform.forward, faceDir, Time.deltaTime * rotateSpeed);
+//             }
+//         }
+
+//         isWalking = inputMag > 0.0001f;
+
+//     }
+
+//     private void SetSelectedCounter(BaseCounter selectedCounter)
+//     {
+//                 this.selectedCounter = selectedCounter;
+
+//         OnSelectedCounterChanged?.Invoke(this, new OnselectedCounterChangedEventArgs
+//         {
+//             selectedCounter = selectedCounter
+//         });
+//     }
+
+//     public Transform GetKitchenObjectFollowTransform()
+//     {
+//         return kitchenObjectHoldPoint;
+
+//     }
+//     public void SetKitchenObject(KitchenObject kitchenObject)
+//     {
+//         this.kitchenObject = kitchenObject;
+//     }
+//     public KitchenObject GetKitchenObject()
+//     {
+//         return kitchenObject;
+//     }
+//     public void ClearKitchenObject()
+//     {
+//         kitchenObject = null;
+
+//     }
+//     public bool HasKitchenObject()
+//     {
+//         return (kitchenObject != null);
+//     }
+// }
