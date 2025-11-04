@@ -1,4 +1,3 @@
-using Assets.Scripts;
 using UnityEngine;
 
 public interface IKitchenObjectParent
@@ -12,5 +11,4 @@ public interface IKitchenObjectParent
     public void ClearKitchenObject();
 
     public bool HasKitchenObject();
-    void SetKitchenObject(PlayerConliisen playerConliisen);
 }
