@@ -22043,3 +22043,289 @@ v
 //        animator.SetBool(IS_WALKING, player.IsWalking());
 //    }
 //}
+//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}//    using UnityEngine;
+
+//public class PlayerAnimator : MonoBehaviour
+//{
+//    // Start is called once before the first execution of Update after the MonoBehaviour is created
+//    private const string IS_WALKING = "IsWalking";
+
+//    [SerializeField] private Player player;
+
+//    private Animator animator;
+//    private void Awake()
+//    {
+//        animator = GetComponent<Animator>();
+
+//    }
+//    private void Update()
+//    {
+//        animator.SetBool(IS_WALKING, player.IsWalking());
+//    }
+//}
