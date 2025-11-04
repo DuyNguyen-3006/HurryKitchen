@@ -8,7 +8,7 @@ namespace Assets.Scripts
 {
     public class Classbuff
     {
-       public class ClassA
+        public class ClassA
         {
             public void MethodA()
             {
@@ -35,6 +35,25 @@ namespace Assets.Scripts
             {
                 // Implementation of MethodD
             }
+        }
+        public interface IAdminService
+        {
+            Task<Pagination<GetUserDto>> GetListUserAsync(
+                string? search,
+                string? role,
+                string? sortBy,
+                bool isDescending,
+                int page,
+                int pageSize);
+
+            Task<Pagination<UserDto>> GetListEmployeeAsync(
+                 string? search,
+                 string? sortBy,
+                 bool isDescending,
+                 int page,
+                int pageSize
+                );
+
         }
     }
 }
