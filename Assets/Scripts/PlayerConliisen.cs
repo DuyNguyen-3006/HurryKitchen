@@ -10644,6 +10644,8 @@
 //        }
 //    }
 //}
+using UnityEngine;
+
 v
 //using UnityEngine;
 
@@ -22688,10 +22690,10 @@ v
 //     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
 //     {
 //         if(selectedCounter != null) {
-            
+
 //                 selectedCounter.Interact(this);
 //             } 
-        
+
 //     }
 
 //     private void Update()
@@ -22904,10 +22906,10 @@ v
 //     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
 //     {
 //         if(selectedCounter != null) {
-            
+
 //                 selectedCounter.Interact(this);
 //             } 
-        
+
 //     }
 
 //     private void Update()
@@ -23120,10 +23122,10 @@ v
 //     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
 //     {
 //         if(selectedCounter != null) {
-            
+
 //                 selectedCounter.Interact(this);
 //             } 
-        
+
 //     }
 
 //     private void Update()
@@ -23336,10 +23338,10 @@ v
 //     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
 //     {
 //         if(selectedCounter != null) {
-            
+
 //                 selectedCounter.Interact(this);
 //             } 
-        
+
 //     }
 
 //     private void Update()
@@ -23552,10 +23554,10 @@ v
 //     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
 //     {
 //         if(selectedCounter != null) {
-            
+
 //                 selectedCounter.Interact(this);
 //             } 
-        
+
 //     }
 
 //     private void Update()
@@ -23768,10 +23770,10 @@ v
 //     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
 //     {
 //         if(selectedCounter != null) {
-            
+
 //                 selectedCounter.Interact(this);
 //             } 
-        
+
 //     }
 
 //     private void Update()
@@ -23984,10 +23986,10 @@ v
 //     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
 //     {
 //         if(selectedCounter != null) {
-            
+
 //                 selectedCounter.Interact(this);
 //             } 
-        
+
 //     }
 
 //     private void Update()
@@ -24200,10 +24202,10 @@ v
 //     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
 //     {
 //         if(selectedCounter != null) {
-            
+
 //                 selectedCounter.Interact(this);
 //             } 
-        
+
 //     }
 
 //     private void Update()
@@ -24416,10 +24418,10 @@ v
 //     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
 //     {
 //         if(selectedCounter != null) {
-            
+
 //                 selectedCounter.Interact(this);
 //             } 
-        
+
 //     }
 
 //     private void Update()
@@ -24632,10 +24634,10 @@ v
 //     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
 //     {
 //         if(selectedCounter != null) {
-            
+
 //                 selectedCounter.Interact(this);
 //             } 
-        
+
 //     }
 
 //     private void Update()
@@ -24737,76 +24739,51 @@ v
 //                     {
 //                         // Va chạm lướt/chéo: cho trượt theo tiếp tuyến bề mặt
 //                         Vector3 slideDir = Vector3.ProjectOnPlane(moveDir, hit.normal).normalized;
+//public class ProgressBarUI : MonoBehaviour
+//{
+//    [SerializeField] private GameObject hasProgressGameObject;
+//    [SerializeField] private Image barImage;
 
-//                         if (slideDir.sqrMagnitude > 0.0001f)
-//                         {
-//                             if (Physics.CapsuleCast(p1, p2, capsuleRadius, slideDir, out RaycastHit slideHit, maxDistance + skin, obstacleMask, QueryTriggerInteraction.Ignore))
-//                             {
-//                                 float allowed = Mathf.Max(0f, slideHit.distance - skin);
-//                                 if (allowed > 0f)
-//                                 {
-//                                     movedThisFrame = slideDir * allowed;
-//                                     transform.position += movedThisFrame;
-//                                 }
-//                             }
-//                             else
-//                             {
-//                                 movedThisFrame = slideDir * maxDistance;
-//                                 transform.position += movedThisFrame;
-//                             }
-//                         }
-//                     }
-//                 }
-//             }
-//             else
-//             {
-//                 // Không va chạm: đi bình thường
-//                 movedThisFrame = moveDir * maxDistance;
-//                 transform.position += movedThisFrame;
-//             }
+//    private IHasProgress hasProgress;
 
-//             // Xoay theo hướng chuyển động thực tế (chỉ xoay khi có di chuyển)
-//             if (movedThisFrame.sqrMagnitude > 0f)
-//             {
-//                 Vector3 faceDir = movedThisFrame.normalized;
-//                 transform.forward = Vector3.Slerp(transform.forward, faceDir, Time.deltaTime * rotateSpeed);
-//             }
-//         }
+//    private void Start()
+//    {
 
-//         isWalking = inputMag > 0.0001f;
+//        hasProgress = hasProgressGameObject.GetComponent<IHasProgress>();
+//        //if (hasProgress != null)
+//        //{
+//        //    hasProgress.OnProgressChanged += HasProgress_OnProgressChanged;
+//        //}
 
-//     }
+//        hasProgress.OnProgressChanged += HasProgress_OnProgressChanged;
 
-//     private void SetSelectedCounter(BaseCounter selectedCounter)
-//     {
-//                 this.selectedCounter = selectedCounter;
+//        barImage.fillAmount = 0f;
 
-//         OnSelectedCounterChanged?.Invoke(this, new OnselectedCounterChangedEventArgs
-//         {
-//             selectedCounter = selectedCounter
-//         });
-//     }
+//        Hide();
+//    }
 
-//     public Transform GetKitchenObjectFollowTransform()
-//     {
-//         return kitchenObjectHoldPoint;
+//    private void HasProgress_OnProgressChanged(object sender, IHasProgress.OnProgressChangedEventArgs e)
+//    {
+//        barImage.fillAmount = e.progressNormalized;
 
-//     }
-//     public void SetKitchenObject(KitchenObject kitchenObject)
-//     {
-//         this.kitchenObject = kitchenObject;
-//     }
-//     public KitchenObject GetKitchenObject()
-//     {
-//         return kitchenObject;
-//     }
-//     public void ClearKitchenObject()
-//     {
-//         kitchenObject = null;
+//        if (e.progressNormalized == 0f || e.progressNormalized == 1f)
+//        {
+//            Hide();
+//        }
+//        else
+//        {
+//            Show();
 
-//     }
-//     public bool HasKitchenObject()
-//     {
-//         return (kitchenObject != null);
-//     }
-// }
+//        }
+//    }
+
+//    private void Show()
+//    {
+//        gameObject.SetActive(true);
+//    }
+
+//    private void Hide()
+//    {
+//        gameObject.SetActive(false);
+//    }
+//}
