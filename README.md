@@ -1,4 +1,4 @@
-Link Deploy: 
+Link Deploy: https://play.unity.com/en/games/8cfe6c93-ef17-4989-9a26-baff833feeaf/hurry-kitchen
 - Giới thiệu Game: Hurry Kitchen (Nhóm 6)
 
 Hurry Kitchen là một trò chơi nấu ăn 3D được phát triển bằng Unity, tập trung vào yếu tố quản lý thời gian (time management), phản xạ nhanh, và xử lý đơn hàng chính xác trong giới hạn thời gian. Người chơi sẽ vào vai Chef, một đầu bếp trẻ đang cố gắng duy trì hoạt động của nhà hàng đầu tiên trong những giờ cao điểm đầy áp lực.
